@@ -33,10 +33,12 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.executable.ExecutableValidator;
 
+import org.jline.terminal.Terminal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.shell.jline.TerminalHolder;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -63,6 +65,9 @@ public class Shell implements CommandRegistry {
 	 */
 	public static final Object NO_INPUT = new Object();
 
+	@Autowired
+	Terminal terminal;
+	
 	@Autowired
 	protected ApplicationContext applicationContext;
 
@@ -120,6 +125,30 @@ public class Shell implements CommandRegistry {
 	public void run(InputProvider inputProvider) throws IOException {
 		while (true) {
 			Input input;
+			try {
+				input = inputProvider.readInput();
+			}
+			catch (Exception e) {
+				resultHandler.handleResult(e);
+				continue;
+			}
+			if (input == null) {
+				break;
+			}
+			Object result = evaluate(input);
+			if (result != NO_INPUT) {
+				resultHandler.handleResult(result);
+			}
+		}
+	}
+	
+	public void run(TerminalAwareInputProvider inputProvider) throws IOException {
+		while (true) {
+			Input input;
+			TerminalHolder terminalHolder = (TerminalHolder) terminal;
+			
+			terminalHolder.setTerminal(inputProvider.getTerminal());
+			
 			try {
 				input = inputProvider.readInput();
 			}

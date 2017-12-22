@@ -74,12 +74,7 @@ public class JLineShellAutoConfiguration {
 
 	@Bean(destroyMethod = "close")
 	public Terminal terminal() {
-		try {
-			return TerminalBuilder.builder().build();
-		}
-		catch (IOException e) {
-			throw new BeanCreationException("Could not create Terminal: " + e.getMessage());
-		}
+		return new TerminalHolder();
 	}
 
 	@Bean
