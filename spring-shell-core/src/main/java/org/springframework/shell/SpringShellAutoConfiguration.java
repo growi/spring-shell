@@ -69,9 +69,13 @@ public class SpringShellAutoConfiguration {
 		return Validation.buildDefaultValidatorFactory().getValidator();
 	}
 
-	@Bean
-	public Shell shell(@Qualifier("main") ResultHandler resultHandler) {
-		return new Shell(resultHandler);
-	}
+//	@Bean
+//	public Shell shell(@Qualifier("main") ResultHandler resultHandler) {
+//		return new Shell(resultHandler);
+//	}
 
+	@Bean
+	public MultiTerminalShell multiTerminalShell(@Qualifier("main") ResultHandler resultHandler) {
+		return new MultiTerminalShell(resultHandler);
+	}
 }

@@ -53,6 +53,7 @@ import org.springframework.shell.Input;
 import org.springframework.shell.InputProvider;
 import org.springframework.shell.ResultHandler;
 import org.springframework.shell.Shell;
+import org.springframework.shell.Switchboard;
 
 /**
  * Shell implementation using JLine to capture input and trigger completions.
@@ -74,12 +75,7 @@ public class JLineShellAutoConfiguration {
 
 	@Bean(destroyMethod = "close")
 	public Terminal terminal() {
-		try {
-			return TerminalBuilder.builder().build();
-		}
-		catch (IOException e) {
-			throw new BeanCreationException("Could not create Terminal: " + e.getMessage());
-		}
+		return new Switchboard();
 	}
 
 	@Bean
